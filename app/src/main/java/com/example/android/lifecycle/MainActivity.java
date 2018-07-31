@@ -6,16 +6,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.android.toys.R;
+
 
 public class MainActivity extends AppCompatActivity {
-    /*
-     * This tag will be used for logging. It is best practice to use the class's name using
-     * getSimpleName as that will greatly help to identify the location from which your logs are
-     * being posted.
-     */
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    private static final String LIFECYCLE_CALLBACKS_TEXT_KEY = "callbacks";
     /* Constant values for the names of each respective lifecycle callback */
     private static final String ON_CREATE = "onCreate";
     private static final String ON_START = "onStart";
@@ -31,50 +26,68 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLifecycleDisplay = (TextView) findViewById(R.id.tv_lifecycle_events_display);
-
-
-        // COMPLETED (1) Use logAndAppend within onCreate
-        logAndAppend(ON_CREATE);
+        mLifecycleDisplay = findViewById(R.id.tv_lifecycle_events_display);
+        if (savedInstanceState != null){
+        if (savedInstanceState.containsKey(LIFECYCLE_CALLBACKS_TEXT_KEY)) {
+            String allPreviousLifecycleCallbacks = savedInstanceState.getString(LIFECYCLE_CALLBACKS_TEXT_KEY);
+            mLifecycleDisplay.setText(allPreviousLifecycleCallbacks);
+        }
     }
 
-    // COMPLETED (2) Override onStart, call super.onStart, and call logAndAppend with ON_START
+        logAndAppend(ON_CREATE);
+
+    }
+
+
     @Override
     protected void onStart() {
         super.onStart();
         logAndAppend(ON_START);
     }
-    // COMPLETED (3) Override onResume, call super.onResume, and call logAndAppend with ON_RESUME
+
+
     @Override
     protected void onResume() {
         super.onResume();
         logAndAppend(ON_RESUME);
     }
-    // COMPLETED(4) Override onPause, call super.onPause, and call logAndAppend with ON_PAUSE
-@Override
-protected void onPause() {
-    super.onPause();
-    logAndAppend(ON_PAUSE);
-}
-    // COMPLETED (5) Override onStop, call super.onStop, and call logAndAppend with ON_STOP
-   @Override
-   protected void onStop(){
-        super.onStop();
-        logAndAppend(ON_STOP);
-   }
-    // COMPLETED (6) Override onRestart, call super.onRestart, and call logAndAppend with ON_RESTART
-@Override
-protected void onRestart(){
-        super.onRestart();
-           logAndAppend(ON_RESTART);
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logAndAppend(ON_PAUSE);
     }
 
-    // COMPLETED(7) Override onDestroy, call super.onDestroy, and call logAndAppend with ON_DESTROY
+
     @Override
-    protected void onDestroy(){
+    protected void onStop() {
+        super.onStop();
+        logAndAppend(ON_STOP);
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        logAndAppend(ON_RESTART);
+    }
+
+
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         logAndAppend(ON_DESTROY);
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        logAndAppend(ON_SAVE_INSTANCE_STATE);
+        String lifecycleDisplayTextViewContents = mLifecycleDisplay.getText().toString();
+        outState.putString(LIFECYCLE_CALLBACKS_TEXT_KEY, lifecycleDisplayTextViewContents);
+
+}
     /**
      * Logs to the console and appends the lifecycle method name to the TextView so that you can
      * view the series of method callbacks that are called both from the app and from within
