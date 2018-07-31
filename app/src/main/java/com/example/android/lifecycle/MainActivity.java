@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -20,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String ON_RESTART = "onRestart";
     private static final String ON_DESTROY = "onDestroy";
     private static final String ON_SAVE_INSTANCE_STATE = "onSaveInstanceState";
-    private TextView mLifecycleDisplay;
-
+    private  TextView mLifecycleDisplay;
+    private static final ArrayList<String> mLifecycleCallbacks = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState.containsKey(LIFECYCLE_CALLBACKS_TEXT_KEY)) {
             String allPreviousLifecycleCallbacks = savedInstanceState.getString(LIFECYCLE_CALLBACKS_TEXT_KEY);
             mLifecycleDisplay.setText(allPreviousLifecycleCallbacks);
+            for (int i = mLifecycleCallbacks.size() - 1; i >= 0; i--) {
+                mLifecycleDisplay.append(mLifecycleCallbacks.get(i) + "\n");
+                mLifecycleCallbacks.clear();
+            }
         }
     }
 
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         logAndAppend(ON_STOP);
+        mLifecycleCallbacks.add(0, ON_STOP);
     }
 
 
@@ -78,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         logAndAppend(ON_DESTROY);
+        mLifecycleCallbacks.add(0, ON_DESTROY);
     }
 
     @Override
